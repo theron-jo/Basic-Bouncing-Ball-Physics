@@ -16,17 +16,13 @@ class Balls():
         self.bounce_count = 0
         
 
-
-    def draw(self, surface):
-        rect = pygame.draw.rect(surface, pygame.SRCALPHA, self.surface, self.rad*2)
-        ball = pygame.draw.circle(surface, self.col, self.pos, self.rad)
-
     def gravity(self, grav = 0.5):
-        if self.pos[1] <= 750-self.rad-10 and self.suspended == False:
-            self.suspended = True
-        if self.suspended:
-            self.speed[1] += grav
-            self.pos[1] += self.speed[1]
+        if not self.clicked:
+            if self.pos[1] <= 750-self.rad-10 and self.suspended == False:
+                self.suspended = True
+            if self.suspended:
+                self.speed[1] += grav
+                self.pos[1] += self.speed[1]
 
     def bounce(self):
         if self.pos[1] >= (750 - self.rad) and self.speed[1] > 0:
@@ -39,15 +35,31 @@ class Balls():
     def coll_update(self):
         self.surface[0] = self.pos[0] - self.rad
         self.surface[1] =  self.pos[1] - self.rad
+
+    def select_check(self, mouse_pos):
+        self.clicked = False
+        if self.surface.collidepoint(mouse_pos):
+            self.clicked = True
+        return self.clicked
+    
+    def selected(self, mouse_pos):
+        if self.clicked == True:
+            self.pos = mouse_pos
+            self.speed = [0, 0]
+
+    def draw(self, surface):
+        rect = pygame.draw.rect(surface, pygame.SRCALPHA, self.surface, self.rad*2)
+        ball = pygame.draw.circle(surface, self.col, self.pos, self.rad)
         
     def move(self):
         self.gravity()
         self.bounce()
-
+    
                
-    def update(self):
+    def update(self, mouse_pos):
         self.move()
         self.coll_update()
+        self.selected(mouse_pos)
 
     
         

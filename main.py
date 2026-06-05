@@ -13,20 +13,21 @@ object_list.append(Ball_1)
 
 while running:
     screen.fill("black")
-    mouse_pos = pygame.mouse.get_pos()
+    mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
 
     Ball_1.draw(screen)
-    Ball_1.update()
+    Ball_1.update(mouse_pos)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             for object in object_list:
-                if object.surface.collidepoint(mouse_pos):
-                    object.pos[1] = mouse_pos[1] 
-                    object.pos[0] = mouse_pos[0]
-                    object.speed = [0,0]
+                object.select_check(event.pos)
+        if event.type == pygame.MOUSEBUTTONUP:
+            for object in object_list:
+                object.clicked = False
+
 
 
     
