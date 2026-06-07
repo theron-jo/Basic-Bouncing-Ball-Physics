@@ -1,22 +1,27 @@
 import pygame
 from Classes.Ball import Balls
+from Classes.constants import *
 
 pygame.init()
-screen = pygame.display.set_mode((1280, 750))
+screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 running = True
-object_list = []
 
 Ball_1 = Balls()
-object_list.append(Ball_1)
+Ball_2 = Balls([150,150])
+object_list = [Ball_1, Ball_2]
+
 
 
 while running:
     screen.fill("black")
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
 
-    Ball_1.draw(screen)
-    Ball_1.update(mouse_pos)
+
+    for object in object_list:
+        object.draw(screen)
+        object.update(mouse_pos)
+        object.collides_ball(object_list)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
