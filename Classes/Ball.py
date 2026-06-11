@@ -1,5 +1,6 @@
 import pygame
 from Classes.constants import *
+from math import atan2
 
 
 
@@ -47,13 +48,28 @@ class Balls():
             self.pos[1] == screen_height - self.rad
             self.suspended = False
 
+    def conservation_of_momentum(self, other):
+        self_angle = self.pos.angle_to(other.pos)
+        oth_angle = other.pos.angle_to(self.pos)
+        tangent_2 = 2* (atan2(self.pos[0] - other.pos[0], self.pos[1] - other.pos[1]))
+        
+        self_new_angle = tangent_2 - self_angle
+        self.pos.rotate(self_new_angle)
+        oth_new_angle = tangent_2 - oth_angle
+        other.pos.rotate(oth_new_angle)
+        if self.speed[1] > self.speed[0]:
+            
+            self.speed[1] = -self.speed[1] * self.elas
+            other.speed[1] += (self.speed [1] * (other.elas+self.elas)/other.elas)
+            
+
     def collides_ball(self, object_list):
         for object in object_list:
             if object_list.index(self) != object_list.index(object):
                 distance = self.pos.distance_to(object.pos)
-                if distance <= self.rad:
+                if distance <= 2*self.rad:
                     self.speed[0] = -self.speed[0]
-                    self.speed[1] = -self.speed[1]
+                    self.conservation_of_momentum(object)
     
     def coll_update(self):
         self.surface[0] = self.pos[0] - self.rad
