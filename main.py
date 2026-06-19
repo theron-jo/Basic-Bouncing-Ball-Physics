@@ -17,6 +17,7 @@ def create_ball(ball_id, pos, elas, col, rad):
 
 ball_1 = create_ball("ball_1", [100,200], 0.9, "blue", 25.0)
 ball_2 = create_ball("ball_2", [200, 200], 0.8, "green", 40.0)
+ball_3 = create_ball("ball_3", [300, 150], 0.7, "yellow", 55.0  )
 
 
 while running:
@@ -29,18 +30,8 @@ while running:
         ball.collides_barrier()
         ball.update()
         ball.collides_mouse(mouse)
+        ball.resolve_collision(ball_list)
 
-    ball_1.check_collision(ball_2)
-    ball_1.find_overlap(ball_2)
-    ball_1.resolve_overlap(ball_2)
-    ball_1.resolve_collision(ball_2)
-
-    ball_2.check_collision(ball_1)
-    ball_2.find_overlap(ball_1)
-    ball_2.resolve_overlap(ball_1)
-    ball_2.resolve_collision(ball_1)
-
-    
 
 
     for event in pygame.event.get():

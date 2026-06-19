@@ -1,5 +1,25 @@
 import math
 
+def multiply(coord, factor):
+      coord[0] = coord[0] * factor
+      coord[1] = coord[1] * factor
+      return coord
+
+def divide(coord, factor):
+      coord[0] = coord[0]/factor
+      coord[1] = coord[1]/factor
+      return coord
+
+def add_to(coord, factor):
+      coord[0] += factor
+      coord[1] += factor
+      return coord
+
+def sub_from(coord, factor):
+      coord[0] -= factor
+      coord[1] -= factor
+      return coord
+
 def get_mag(coord: list[int]):
         mag = math.sqrt((coord[0]**2) + (coord[1]**2))
         return mag

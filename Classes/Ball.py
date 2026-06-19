@@ -57,46 +57,51 @@ class Balls():
         if self.clicked == True:
             self.pos[0] = mouse_pos[0]
             self.pos[1] = mouse_pos[1]
+            self.vel[0] = 0
+            self.vel[1] = 0
 
     def check_collision(self, other):
         distance = get_distance(self.pos, other.pos)
         if (self.rad + other.rad) >= distance:
             self.collide = True
+            return distance
         else:
             self.collide = False
 
     def find_overlap(self, other):
-        if self.collide == True:
             overlap = (self.rad + other.rad) - (get_distance(self.pos, other.pos))
             return overlap
         
     def resolve_overlap(self, other):
-        if self.collide == True:
-            overlap = self.find_overlap(other)
-            self_mag = get_mag(self.pos)
-            other_mag = get_mag(other.pos)
-            self_mag -= overlap/2
-            other_mag += overlap/2
-            self.pos = normalize(self.pos)
-            other.pos = normalize(other.pos)
-            self.pos[0] = self.pos[0] * self_mag
-            self.pos[1] = self.pos[1] * self_mag
-            other.pos[0] = other.pos[0] * other_mag
-            other.pos[1] = other.pos[1] * other_mag
-
-    def resolve_collision(self, other):
-        self.check_collision(other)
-        self.resolve_overlap(other)
-        if self.collide == True:
-            self.vel[0] = -self.vel[0]
-            self.vel[1] = -self.vel[1]
-            relative_speed = get_relative_vector(self.vel, other.vel)
-            self_reflect_angle = get_reflect_angle(self, other)
+        overlap = self.find_overlap(other)
+        self_mag = get_mag(self.pos)
+        other_mag = get_mag(other.pos)
+        self_mag -= overlap/2
+        other_mag += overlap/2
+        self.pos = normalize(self.pos)
+        other.pos = normalize(other.pos)
+        self.pos[0] = self.pos[0] * self_mag
+        self.pos[1] = self.pos[1] * self_mag
+        other.pos[0] = other.pos[0] * other_mag
+        other.pos[1] = other.pos[1] * other_mag
 
 
-    
+    def resolve_collision(self, object_list):
+        for object in object_list:
+            if object_list.index(self) != object_list.index(object):
+                distance = self.check_collision(object)
+                if self.collide == True and (self.rad + object.rad) >= distance:
+                    try:
+                        self.resolve_overlap(object)
+                        col_normal = normalize(get_relative_vector(self.pos, object.pos))
+                        relative_vel = get_relative_vector(self.vel, object.vel)
+                        normal_vel = get_dot(relative_vel, col_normal)
+                        if normal_vel > 0:
+                            return
+                        self.vel = multiply(add_to(self.vel, normal_vel/2), self.elas)
+                        object.vel = multiply(sub_from(object.vel, normal_vel/2), object.elas)                  
+                        self.collide = False
+                    except:
+                        raise Exception ("unknown error detected")
 
-   
-
-    
         
